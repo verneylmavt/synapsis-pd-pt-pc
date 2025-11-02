@@ -1,4 +1,4 @@
-# Synapsis AI Engineer Challenge - People Detection + People Tracking + People Counting
+# Synapsis AI Engineer Challenge: People Detection + People Tracking + People Counting
 
 This project implements a complete people counting system that integrates people detection and people tracking within user-defined polygonal regions of a video feed. Built with FastAPI, YOLOv8, and ByteTrack, it enables users to upload videos, define custom areas of interest, and monitor in/out movement patterns in real time. The system persists detection and event data to a PostgreSQL database, exposing live analytics through an interactive dashboard.
 
@@ -37,6 +37,8 @@ synapsis-pd-pt-pc
 
 ## 🛢 Database Design
 
+![Demo GIF](https://github.com/verneylmavt/synapsis-pd-pt-pc/blob/main/assets/ER Diagram.jpg)
+
 ## 🔀 Workflow
 
 ## 🔌 API
@@ -47,7 +49,7 @@ synapsis-pd-pt-pc
 
 1. **Database Design** ✔️
    - How It Works?  
-     The database serves as the foundation for all data storage and analytics within the system. It is built using PostgreSQL and managed through SQLAlchemy ORM with Alembic for version-controlled schema migrations. The schema follows a relational structure with four main tables: video_sources (managing video feed metadata), areas (storing polygonal detection zones in JSONB format), detections (logging per-frame person detections with bounding boxes and confidence scores), and events (recording entry and exit actions within defined areas). Each table is linked by foreign keys to maintain referential integrity, while timestamp fields enable temporal analytics. All database operations are handled through a scoped session manager that ensures transactional safety, and Docker Compose provides a reproducible PostgreSQL environment with an integrated Adminer interface for quick inspection.
+     The database serves is built using PostgreSQL and managed through SQLAlchemy ORM with Alembic for version-controlled schema migrations. The schema follows a relational structure with four main tables: video_sources (managing video feed metadata), areas (storing polygonal detection zones in JSONB format), detections (logging per-frame person detections with bounding boxes and confidence scores), and events (recording entry and exit actions within defined areas). Each table is linked by foreign keys to maintain referential integrity, while timestamp fields enable temporal analytics. All database operations are handled through a scoped session manager that ensures transactional safety, and Docker Compose provides a reproducible PostgreSQL environment with an integrated Adminer interface for quick inspection.
    - Challenges  
      Building a database for a real-time video analytics pipeline introduced several key challenges. Managing the high-frequency insertion of detections and events required optimizing session handling and connection pooling to maintain throughput without data loss. Storing large volumes of time-series detection data also raised issues of scalability, necessitating careful indexing and potential partitioning strategies. The use of JSONB for polygon storage offered flexibility but limited spatial query performance compared to dedicated GIS extensions like PostGIS. Furthermore, keeping ORM models and Alembic migrations in sync during iterative development was error-prone. Ensuring that real-time API endpoints reflected the latest database state without overwhelming query loads required a balance between consistency, performance, and efficiency.
 2. **Pengumpulan Dataset** ❌  
