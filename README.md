@@ -37,7 +37,7 @@ synapsis-pd-pt-pc
 
 ## 🛢 Database Design
 
-![Demo GIF](https://github.com/verneylmavt/synapsis-pd-pt-pc/blob/main/assets/ER%20Diagram.jpg)
+![ER Diagram](https://github.com/verneylmavt/synapsis-pd-pt-pc/blob/1a1e38f8a7c251972e69d49a4294f6069bc764a1/asset/ER%20Diagram.jpg)
 
 ## 🔀 Workflow
 
