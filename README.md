@@ -39,6 +39,15 @@ synapsis-pd-pt-pc
 
 ![ER Diagram](https://github.com/verneylmavt/synapsis-pd-pt-pc/blob/1a1e38f8a7c251972e69d49a4294f6069bc764a1/asset/ER%20Diagram.jpg)
 
+- VideoSource: Input Video Stream or File
+- Area: Polygon-Shaped Region for Specific Video Source
+- Detection: Detected Object per Frame
+- Event: “Enter” and “Exit” Occurrence of Tracked Object
+
+To handle video input and detection, the system is designed so that each VideoSource entry in the database represents one input stream. During runtime, the application loads these sources and processes frames using a pretrained YOLOv8 model to perform real-time people detection. Each detected object is stored in the Detection table, which records bounding box coordinates, confidence scores, timestamps, and tracker IDs assigned by ByteTrack. This ensures every frame’s results are traceable to a specific video source.
+
+The relationship between the detection and area configuration tables is established through the inside_area_id foreign key in the Detection table, which references the Area table that stores polygon configurations for each video source. Each Area defines a specific region of interest in polygonal form, allowing the system to determine whether a detection’s centroid lies inside that region. When a detected person enters or exits an area, corresponding records are created in the Event table linked to both the Area and VideoSource.
+
 ## 🔀 Workflow
 
 ## 🔌 API
