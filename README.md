@@ -111,3 +111,53 @@ The relationship between the detection and area configuration tables is establis
    The deployment phase was not completed due to time limitations. While the core system functions correctly in a local environment, there was insufficient time to set up deployment infrastructure, such as hosting the application on cloud platforms like Vercel or AWS.
 
 ## ⚙️ Local Setup
+
+0. Make sure to have the prerequisites:
+
+   - Git
+   - Python
+   - Conda or venv
+   - PostgreSQL and Docker
+   - FFmpeg
+   - NVIDIA Driver + CUDA Toolkit (optional)
+
+1. Clone the repository:
+
+   ```bash
+    git clone https://github.com/verneylmavt/synapsis-pd-pt-pc.git
+    cd synapsis-pd-pt-pc
+   ```
+
+2. Create environment and install dependencies:
+
+   ```bash
+   conda create -n synapsis python=3.10 -y
+   conda activate synapsis
+
+   pip3 install torch torchvision --index-url https://download.pytorch.org/whl/cu126
+   pip install -r requirements.txt
+   ```
+
+3. Run the PostgreSQL:
+
+   ```bash
+   docker compose up -d
+   ```
+
+4. Create migration scripts and apply migrations:
+
+   ```bash
+   alembic revision --autogenerate -m "migration"
+   alembic upgrade head
+   ```
+
+5. Run the server:
+
+   ```bash
+   uvicorn app.main:app --reload
+   ```
+
+6. Open the dashboard:
+   ```bash
+   start "http://127.0.0.1:8000/dashboard"
+   ```
