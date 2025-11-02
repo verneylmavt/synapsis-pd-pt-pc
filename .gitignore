@@ -1,0 +1,9 @@
+__pycache__/
+*/__pycache__/
+
+data/
+alembic/versions/
+
+yolov8m.pt
+yolov8n.pt
+yolov8s.pt
