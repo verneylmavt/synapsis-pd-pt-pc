@@ -71,7 +71,7 @@ The relationship between the detection and area configuration tables is establis
 
 ## 🖥️ Dashboard
 
-![Dashboard](https://github.com/verneylmavt/synapsis-pd-pt-pc/blob/main/assets/Dashboard.gif)
+![Dashboard](https://raw.githubusercontent.com/verneylmavt/synapsis-pd-pt-pc/refs/heads/main/asset/Dashboard.gif)
 
 ## ✨ Features
 
