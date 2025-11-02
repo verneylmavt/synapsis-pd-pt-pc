@@ -54,9 +54,20 @@ The relationship between the detection and area configuration tables is establis
 
 1. Health Check
    - `GET /healthz`: to verify that the API server is running and reachable
-1. Health Check
-
-- `GET /healthz`: to verify that the API server is running and reachable
+2. Video Source Management
+   - `GET /api/video-sources`: to return a list of all uploaded or registered video sources
+   - `POST /api/upload-video`: to upload a new video file to the server and creates a corresponding VideoSource record in the database
+   - `GET /api/video/first-frame/{video_source_id}`: to return the first frame of a specific video as a JPEG image
+3. Polygon Area Management
+   - `GET /api/areas`: to list all defined polygon areas used for people counting
+   - `POST /api/areas`: to create a new polygon detection area for a given video source
+4. Real-Time Detection & Streaming
+   - `GET /stream/{video_source_id}`: to run live object detection, tracking, and people counting on a selected video source
+5. People Counting Statistics
+   - `GET /api/stats/live`: to return live statistics of people movement for a specific video source and polygon area
+   - `GET /api/stats`: to provide historical statistics for a given video source and area, aggregated over time buckets
+6. Dashboard
+   - `GET /dashboard`: to returns an interactive HTML dashboard for testing and visualization
 
 ## 🖥️ Dashboard
 
