@@ -93,13 +93,13 @@ The relationship between the detection and area configuration tables is establis
    - `GET /stream/{video_source_id}`: to run live object detection, tracking, and people counting on a selected video source
 5. People Counting Statistics
    - `GET /api/stats/live`: to return live statistics of people movement for a specific video source and polygon area
-   ```bash
+     ```bash
      curl -s "http://localhost:8000/api/stats/live?video_source_id={video_source_id}&area_id={area_id}&window_seconds={window_seconds}"
-   ```
+     ```
    - `GET /api/stats`: to provide historical statistics for a given video source and area, aggregated over time buckets
-   ```bash
+     ```bash
      curl -s "http://localhost:8000/api/stats?video_source_id={video_source_id}&area_id={area_id}&granularity=minute&start={start_ISO_8601}&end={end_ISO_8601}"
-   ```
+     ```
 6. Dashboard
    - `GET /dashboard`: to return an interactive HTML dashboard for testing and visualization
 
