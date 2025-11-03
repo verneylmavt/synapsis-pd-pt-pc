@@ -59,18 +59,23 @@ The relationship between the detection and area configuration tables is establis
      ```
 2. Video Source Management
    - `GET /api/video-sources`: to return a list of all uploaded or registered video sources
-   ```bash
-   curl -s http://localhost:8000/api/video-sources
-   ```
+     ```bash
+     curl -s http://localhost:8000/api/video-sources
+     ```
    - `POST /api/upload-video`: to upload a new video file to the server and creates a corresponding VideoSource record in the database
-   ```bash
-   curl -s -X POST http://localhost:8000/api/upload-video \
-   -F "file=@./data/{video_source_name}.mp4" \
-   -F "name={video_source_name}"
-   ```
+     ```bash
+     curl -s -X POST http://localhost:8000/api/upload-video \
+     -F "file=@./data/{video_source}.mp4" \
+     -F "name={video_source_name}"
+     ```
    - `GET /api/video/first-frame/{video_source_id}`: to return the first frame of a specific video as a JPEG image
 3. Polygon Area Management
    - `GET /api/areas`: to list all defined polygon areas used for people counting
+     ```bash
+     curl -s -X POST http://localhost:8000/api/upload-video \
+     -F "file=@./data/{video_source}.mp4" \
+     -F "name={video_source_name}"
+     ```
    - `POST /api/areas`: to create a new polygon detection area for a given video source
 4. Real-Time Detection & Streaming
    - `GET /stream/{video_source_id}`: to run live object detection, tracking, and people counting on a selected video source
