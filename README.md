@@ -72,16 +72,34 @@ The relationship between the detection and area configuration tables is establis
 3. Polygon Area Management
    - `GET /api/areas`: to list all defined polygon areas used for people counting
      ```bash
-     curl -s -X POST http://localhost:8000/api/upload-video \
-     -F "file=@./data/{video_source}.mp4" \
-     -F "name={video_source_name}"
+     curl -s "http://localhost:8000/api/areas"
      ```
    - `POST /api/areas`: to create a new polygon detection area for a given video source
+     ```bash
+     curl -s -X POST http://localhost:8000/api/areas \
+      -H "Content-Type: application/json" \
+      -d '{
+         "video_source_id": {video_source_id},
+         "name": "{area_name}",
+         "polygon": [
+            {"x":{x1},"y":{y1}},
+            {"x":{x2},"y":{y2}},
+            {"x":{x3},"y":{y3}},
+            {"x":{x4},"y":{y4}}
+         ]
+      }'
+     ```
 4. Real-Time Detection & Streaming
    - `GET /stream/{video_source_id}`: to run live object detection, tracking, and people counting on a selected video source
 5. People Counting Statistics
    - `GET /api/stats/live`: to return live statistics of people movement for a specific video source and polygon area
+   ```bash
+     curl -s "http://localhost:8000/api/stats/live?video_source_id={video_source_id}&area_id={area_id}&window_seconds={window_seconds}"
+   ```
    - `GET /api/stats`: to provide historical statistics for a given video source and area, aggregated over time buckets
+   ```bash
+     curl -s "http://localhost:8000/api/stats?video_source_id={video_source_id}&area_id={area_id}&granularity=minute&start={start_ISO_8601}&end={end_ISO_8601}"
+   ```
 6. Dashboard
    - `GET /dashboard`: to return an interactive HTML dashboard for testing and visualization
 
