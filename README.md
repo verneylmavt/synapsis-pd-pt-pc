@@ -138,16 +138,15 @@ The relationship between the detection and area configuration tables is establis
    pip install -r requirements.txt
    ```
 
-3. Run the PostgreSQL:
+3. Start Docker Desktop and Run PostgreSQL:
 
    ```bash
    docker compose up -d
    ```
 
-4. Create migration scripts and apply migrations:
+4. Apply database migrations:
 
    ```bash
-   alembic revision --autogenerate -m "migration"
    alembic upgrade head
    ```
 
