@@ -54,6 +54,9 @@ The relationship between the detection and area configuration tables is establis
 
 1. Health Check
    - `GET /healthz`: to verify that the API server is running and reachable
+   ```bash
+   uvicorn app.main:app --reload
+   ```
 2. Video Source Management
    - `GET /api/video-sources`: to return a list of all uploaded or registered video sources
    - `POST /api/upload-video`: to upload a new video file to the server and creates a corresponding VideoSource record in the database
