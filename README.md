@@ -54,12 +54,20 @@ The relationship between the detection and area configuration tables is establis
 
 1. Health Check
    - `GET /healthz`: to verify that the API server is running and reachable
-   ```bash
-   uvicorn app.main:app --reload
-   ```
+     ```bash
+     curl -s http://localhost:8000/healthz
+     ```
 2. Video Source Management
    - `GET /api/video-sources`: to return a list of all uploaded or registered video sources
+   ```bash
+   curl -s http://localhost:8000/api/video-sources
+   ```
    - `POST /api/upload-video`: to upload a new video file to the server and creates a corresponding VideoSource record in the database
+   ```bash
+   curl -s -X POST http://localhost:8000/api/upload-video \
+   -F "file=@./data/{video_source_name}.mp4" \
+   -F "name={video_source_name}"
+   ```
    - `GET /api/video/first-frame/{video_source_id}`: to return the first frame of a specific video as a JPEG image
 3. Polygon Area Management
    - `GET /api/areas`: to list all defined polygon areas used for people counting
@@ -70,7 +78,7 @@ The relationship between the detection and area configuration tables is establis
    - `GET /api/stats/live`: to return live statistics of people movement for a specific video source and polygon area
    - `GET /api/stats`: to provide historical statistics for a given video source and area, aggregated over time buckets
 6. Dashboard
-   - `GET /dashboard`: to returns an interactive HTML dashboard for testing and visualization
+   - `GET /dashboard`: to return an interactive HTML dashboard for testing and visualization
 
 ## 🖥️ Dashboard
 
