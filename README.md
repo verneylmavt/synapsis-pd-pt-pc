@@ -1,4 +1,4 @@
-# Synapsis AI Engineer Challenge: People Detection + People Tracking + People Counting
+# Synapsis Jr. AI Engineer Challenge: People Detection + People Tracking + People Counting
 
 This project implements a complete people counting system that integrates people detection and people tracking within user-defined polygonal regions of a video feed. Built with FastAPI, YOLOv8, and ByteTrack, it enables users to upload videos, define custom areas of interest, and monitor in/out movement patterns in real time. The system persists detection and event data to a PostgreSQL database, exposing live analytics through an interactive dashboard.
 
