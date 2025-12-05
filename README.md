@@ -2,7 +2,7 @@
 
 This project implements a complete people counting system that integrates people detection and people tracking within user-defined polygonal regions of a video feed. Built with FastAPI, YOLOv8, and ByteTrack, it enables users to upload videos, define custom areas of interest, and monitor in/out movement patterns in real time. The system persists detection and event data to a PostgreSQL database, exposing live analytics through an interactive dashboard.
 
-[Click here to learn more about the project](https://github.com/verneylmavt/synapsis-pd-pt-pc/blob/3f5b52ef32e7e98cc8bc825fdbe27fe2644dff9e/assets/AI%20Engineer%20-%20Challenge.pdf).
+[Click here to learn more about the project: synapsis-pd-pt-pc/assets/AI Engineer - Challenge.pdf](https://github.com/verneylmavt/synapsis-pd-pt-pc/blob/3f5b52ef32e7e98cc8bc825fdbe27fe2644dff9e/assets/AI%20Engineer%20-%20Challenge.pdf).
 
 ## 📁 Project Structure
 
@@ -172,7 +172,7 @@ The relationship between the detection and area configuration tables is establis
    pip install -r requirements.txt
    ```
 
-3. Start Docker Desktop and Run PostgreSQL:
+3. Start Docker Desktop and run PostgreSQL:
 
    ```bash
    docker compose up -d
