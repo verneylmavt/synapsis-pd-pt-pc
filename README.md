@@ -165,8 +165,8 @@ The relationship between the detection and area configuration tables is establis
 2. Create environment and install dependencies:
 
    ```bash
-   conda create -n synapsis python=3.10 -y
-   conda activate synapsis
+   conda create -n synapsis-pd-pt-pc python=3.10 -y
+   conda activate synapsis-pd-pt-pc
 
    pip3 install torch torchvision --index-url https://download.pytorch.org/whl/cu126
    pip install -r requirements.txt
