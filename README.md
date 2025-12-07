@@ -52,31 +52,31 @@ The relationship between the detection and area configuration tables is establis
 
 ## 🔌 API
 
-1. Health Check
+1. **Health Check**
    - `GET /healthz`: to verify that the API server is running and reachable
      ```bash
-     curl -s http://localhost:8000/healthz
+     curl "http://localhost:8000/healthz"
      ```
-2. Video Source Management
+2. **Video Source Management**
    - `GET /api/video-sources`: to return a list of all uploaded or registered video sources
      ```bash
-     curl -s http://localhost:8000/api/video-sources
+     curl "http://localhost:8000/api/video-sources"
      ```
    - `POST /api/upload-video`: to upload a new video file to the server and creates a corresponding VideoSource record in the database
      ```bash
-     curl -s -X POST http://localhost:8000/api/upload-video \
+     curl -X POST "http://localhost:8000/api/upload-video" \
      -F "file=@./data/{video_source}.mp4" \
      -F "name={video_source_name}"
      ```
    - `GET /api/video/first-frame/{video_source_id}`: to return the first frame of a specific video as a JPEG image
-3. Polygon Area Management
+3. **Polygon Area Management**
    - `GET /api/areas`: to list all defined polygon areas used for people counting
      ```bash
-     curl -s "http://localhost:8000/api/areas"
+     curl "http://localhost:8000/api/areas"
      ```
    - `POST /api/areas`: to create a new polygon detection area for a given video source
      ```bash
-     curl -s -X POST http://localhost:8000/api/areas \
+     curl -X POST "http://localhost:8000/api/areas" \
       -H "Content-Type: application/json" \
       -d '{
          "video_source_id": {video_source_id},
@@ -89,18 +89,18 @@ The relationship between the detection and area configuration tables is establis
          ]
       }'
      ```
-4. Real-Time Detection & Streaming
+4. **Real-Time Detection & Streaming**
    - `GET /stream/{video_source_id}`: to run live object detection, tracking, and people counting on a selected video source
-5. People Counting Statistics
+5. **People Counting Statistics**
    - `GET /api/stats/live`: to return live statistics of people movement for a specific video source and polygon area
      ```bash
-     curl -s "http://localhost:8000/api/stats/live?video_source_id={video_source_id}&area_id={area_id}&window_seconds={window_seconds}"
+     curl "http://localhost:8000/api/stats/live?video_source_id={video_source_id}&area_id={area_id}&window_seconds={window_seconds}"
      ```
    - `GET /api/stats`: to provide historical statistics for a given video source and area, aggregated over time buckets
      ```bash
-     curl -s "http://localhost:8000/api/stats?video_source_id={video_source_id}&area_id={area_id}&granularity=minute&start={start_ISO_8601}&end={end_ISO_8601}"
+     curl "http://localhost:8000/api/stats?video_source_id={video_source_id}&area_id={area_id}&granularity=minute&start={start_ISO_8601}&end={end_ISO_8601}"
      ```
-6. Dashboard
+6. **Dashboard**
    - `GET /dashboard`: to return an interactive HTML dashboard for testing and visualization
 
 ## 🖥️ Dashboard
