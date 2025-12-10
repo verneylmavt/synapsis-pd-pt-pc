@@ -149,6 +149,7 @@ The relationship between the detection and area configuration tables is establis
 0. Make sure to have the prerequisites:
 
    - Git
+   - Git Large File Storage
    - Python
    - Conda or venv
    - PostgreSQL and Docker
