@@ -10,7 +10,9 @@ from app.core.config import settings
 
 # Engine & Session factory
 def create_session_factory(config=settings):
-    engine = create_engine(config.database_url, future=True, pool_pre_ping=True)
+    engine = create_engine(config.database_url, future=True, pool_pre_ping=True, pool_timeout=5,
+        connect_args={"connect_timeout": 5, "options": "-c statement_timeout=2000 -c lock_timeout=2000",
+                      "keepalives": 1, "keepalives_idle": 5, "keepalives_interval": 1, "keepalives_count": 2})
     return engine, sessionmaker(bind=engine, autoflush=False, expire_on_commit=False, future=True)
 
 
