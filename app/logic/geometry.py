@@ -1,10 +1,64 @@
 from __future__ import annotations
 
 from typing import Iterable, Tuple
+from math import isfinite
 
 # Small epsilon value used as numerical tolerance.
 # This helps to avoid floating-point rounding errors when comparing equality of real numbers.
 EPS = 1e-12
+
+
+def validate_polygon(points: list[dict]) -> list[dict]:
+    """Return a copied simple polygon with finite normalized coordinates."""
+    if not isinstance(points, list) or len(points) < 3:
+        raise ValueError("Polygon needs at least three distinct vertices")
+    coordinates = []
+    for point in points:
+        if not isinstance(point, dict):
+            raise ValueError("Polygon vertices need x and y coordinates")
+        pair = []
+        for key in ("x", "y"):
+            value = point.get(key)
+            if isinstance(value, bool) or not isinstance(value, (int, float)):
+                raise ValueError("Polygon coordinates must be numbers")
+            value = float(value)
+            if not isfinite(value) or not 0 <= value <= 1:
+                raise ValueError("Polygon coordinates must be finite and within [0,1]")
+            pair.append(value)
+        coordinates.append(tuple(pair))
+    if len(set(coordinates)) != len(coordinates):
+        raise ValueError("Polygon cannot have duplicate vertices")
+    size = len(coordinates)
+    area = sum(coordinates[i][0] * coordinates[(i + 1) % size][1]
+               - coordinates[(i + 1) % size][0] * coordinates[i][1]
+               for i in range(size))
+    if abs(area) <= EPS:
+        raise ValueError("Polygon must have nonzero area")
+
+    def cross(a, b, c):
+        return (b[0] - a[0]) * (c[1] - a[1]) - (b[1] - a[1]) * (c[0] - a[0])
+
+    def intersects(a, b, c, d):
+        values = (cross(a, b, c), cross(a, b, d), cross(c, d, a), cross(c, d, b))
+        if ((values[0] > EPS and values[1] < -EPS or values[0] < -EPS and values[1] > EPS)
+                and (values[2] > EPS and values[3] < -EPS or values[2] < -EPS and values[3] > EPS)):
+            return True
+        return any(abs(value) <= EPS and _point_on_segment(*point, *first, *second)
+                   for value, point, first, second in (
+                       (values[0], c, a, b), (values[1], d, a, b),
+                       (values[2], a, c, d), (values[3], b, c, d)))
+
+    for i in range(size):
+        a, b = coordinates[i], coordinates[(i + 1) % size]
+        c = coordinates[(i + 2) % size]
+        if _point_on_segment(*c, *a, *b) or _point_on_segment(*a, *b, *c):
+            raise ValueError("Polygon edges cannot overlap")
+        for j in range(i + 1, size):
+            if j == i + 1 or (i == 0 and j == size - 1):
+                continue
+            if intersects(a, b, coordinates[j], coordinates[(j + 1) % size]):
+                raise ValueError("Polygon cannot self-intersect")
+    return [{"x": x, "y": y} for x, y in coordinates]
 
 
 def _point_on_segment(px: float, py: float, ax: float, ay: float, bx: float, by: float) -> bool:
