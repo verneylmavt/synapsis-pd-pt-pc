@@ -4,12 +4,17 @@ from contextlib import contextmanager
 
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
+from fastapi import Request
 
 from app.core.config import settings
 
 # Engine & Session factory
-engine = create_engine(settings.database_url, future=True, pool_pre_ping=True)
-SessionLocal = sessionmaker(bind=engine, autoflush=False, autocommit=False, future=True)
+def create_session_factory(config=settings):
+    engine = create_engine(config.database_url, future=True, pool_pre_ping=True)
+    return engine, sessionmaker(bind=engine, autoflush=False, expire_on_commit=False, future=True)
+
+
+engine, SessionLocal = create_session_factory()
 
 
 @contextmanager
@@ -27,8 +32,8 @@ def session_scope():
 
 
 # FastAPI dependency
-def get_db():
-    db = SessionLocal()
+def get_db(request: Request):
+    db = request.app.state.session_factory()
     try:
         yield db
     finally:

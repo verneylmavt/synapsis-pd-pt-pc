@@ -1,10 +1,14 @@
-fastapi
-uvicorn
-sqlalchemy
-alembic
-psycopg2-binary
-pydantic
-python-dotenv
-opencv-python   # On Windows, regular opencv-python is fine
-ultralytics
-numpy
+fastapi==0.115.6
+uvicorn==0.32.1
+SQLAlchemy==2.0.36
+alembic==1.14.0
+psycopg2-binary==2.9.10
+pydantic==2.10.3
+python-dotenv==1.0.1
+python-multipart==0.0.20
+opencv-python==4.10.0.84
+ultralytics==8.3.40
+lapx==0.5.11
+numpy==1.26.4
+torch==2.5.1
+torchvision==0.20.1

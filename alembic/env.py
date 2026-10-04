@@ -14,8 +14,7 @@ if str(PROJECT_ROOT) not in sys.path:
     sys.path.insert(0, str(PROJECT_ROOT))
 
 # Load env (.env) before reading models
-from dotenv import load_dotenv
-load_dotenv(PROJECT_ROOT / ".env")
+from app.core.config import settings
 
 from app.db.models import Base  # noqa: E402
 
@@ -23,9 +22,7 @@ from app.db.models import Base  # noqa: E402
 config = context.config
 
 # If DATABASE_URL is in .env, prefer that
-env_url = os.getenv("DATABASE_URL")
-if env_url:
-    config.set_main_option("sqlalchemy.url", env_url)
+config.set_main_option("sqlalchemy.url", config.attributes.get("database_url", settings.database_url).replace("%", "%%"))
 
 # Interpret the config file for Python logging.
 fileConfig(config.config_file_name)

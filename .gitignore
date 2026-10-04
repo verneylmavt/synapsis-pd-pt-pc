@@ -1,8 +1,20 @@
 __pycache__/
 */__pycache__/
+.env
+.venv/
+.pytest_cache/
+.ruff_cache/
+.codex-work/
+node_modules/
+test-results/
+playwright-report/
+output/playwright/
+*.log
+*.pyc
 
 data/
 
 yolov8m.pt
 yolov8n.pt
 yolov8s.pt
+*.pt

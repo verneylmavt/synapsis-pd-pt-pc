@@ -13,10 +13,10 @@ from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import HTMLResponse, StreamingResponse, Response
 from sqlalchemy import select, func, case
 from sqlalchemy.orm import Session
-from ultralytics import YOLO
 
 
 from app.core.config import settings
+from app.application import create_app
 
 from app.db.models import VideoSource, Area, Event, Detection
 from app.db.session import engine, get_db, SessionLocal
@@ -28,7 +28,7 @@ from app.logic.hysteresis import HysteresisState
 
 
 
-app = FastAPI(title=settings.app_name)
+app = create_app(settings)
 
 app.add_middleware(
     CORSMiddleware,
@@ -37,11 +37,6 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
-
-@app.get("/healthz")
-def health():
-    return {"ok": True, "app": settings.app_name}
-
 
 @app.get("/api/areas", response_model=List[AreaOut])
 def list_areas(
@@ -398,7 +393,8 @@ def stream(video_source_id: int, conf: float = 0.25, iou: float = 0.45, device: 
             raise HTTPException(status_code=400, detail="no active areas for this video source")
 
         # Initialize the YOLOv8 detector (Nano version for speed; can be replaced by larger variants).
-        model = YOLO("yolov8n.pt")
+        from ultralytics import YOLO
+        model = YOLO(str(settings.model_dir / "yolov8n.pt"))
 
         # Begin streaming with ByteTrack tracker enabled.
         # This continuously yields frames and detection results.
