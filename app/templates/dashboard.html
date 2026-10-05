@@ -1,0 +1,63 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="theme-color" content="#f6f8fb">
+  <title>Synapsis · People analytics</title>
+  <link rel="icon" href="data:,">
+  <link rel="stylesheet" href="/static/dashboard.css">
+  <script src="/static/dashboard.js" defer></script>
+</head>
+<body>
+  <a class="skip-link" href="#main">Skip to monitoring</a>
+  <div class="app-shell">
+    <aside class="sidebar" aria-label="Video sources">
+      <a class="brand" href="/dashboard"><span class="brand-mark" aria-hidden="true">S</span><span>synapsis<span class="brand-sub">PEOPLE ANALYTICS</span></span></a>
+      <div class="section-label">YOUR SOURCES <span id="sourceCount">0</span></div>
+      <nav id="sourceList" aria-label="Select a video source"><p class="muted">Loading sources…</p></nav>
+      <button id="refreshSources" class="text-button" type="button">↻ Refresh sources</button>
+      <details id="uploadDetails" class="source-form">
+        <summary>＋ Upload a video</summary>
+        <form id="uploadForm">
+          <label for="videoFile">Video file</label><input id="videoFile" type="file" accept="video/*" required>
+          <label for="videoName">Source name <span class="muted">(optional)</span></label><input id="videoName" maxlength="255" placeholder="Entrance recording">
+          <button id="uploadButton" type="submit" class="primary">Upload video</button>
+          <div id="uploadProgressWrap" hidden><label for="uploadProgress">Upload progress</label><progress id="uploadProgress" max="100" value="0"></progress><button id="cancelUpload" type="button" class="text-button">Cancel upload</button></div>
+          <p id="uploadMessage" class="form-message" role="status"></p>
+        </form>
+      </details>
+      <details id="cameraDetails" class="source-form">
+        <summary>＋ Add a live camera</summary>
+        <form id="cameraForm">
+          <label for="cameraName">Camera name</label><input id="cameraName" maxlength="255" placeholder="Warehouse entrance" required>
+          <label for="cameraUri">RTSP or HTTP stream URL</label><input id="cameraUri" type="password" autocomplete="off" placeholder="rtsp://camera/stream" required aria-describedby="cameraHint">
+          <p id="cameraHint" class="hint">Use a camera reachable from this server. The URL is hidden after saving.</p>
+          <button type="submit" class="primary">Add camera</button><p id="cameraMessage" class="form-message" role="status"></p>
+        </form>
+      </details>
+      <div class="sidebar-note"><span class="status-dot" aria-hidden="true"></span> One source. One processing run.<br><span class="muted">Viewers share the same results.</span></div>
+    </aside>
+    <main id="main" class="main-content">
+      <header class="page-header"><div><p class="eyebrow">MONITORING WORKSPACE</p><h1>People analytics</h1><p class="muted">Understand movement through the spaces that matter.</p></div><span class="workspace-badge">Synapsis AI</span></header>
+      <div id="notice" class="notice" role="status" aria-live="polite" hidden></div>
+      <section class="source-header" aria-labelledby="sourceHeading"><div><h2 id="sourceHeading">Select a source to begin</h2><p id="sourceMeta" class="muted">Upload a recording or connect a camera.</p></div><div id="runStatus" class="run-status" role="status">No run</div></section>
+      <section class="panel monitor-panel" aria-label="Video monitoring">
+        <div class="panel-toolbar"><div class="field"><label for="areaSelect">Monitored area</label><select id="areaSelect" disabled><option value="">Create your first area</option></select></div><div class="field run-picker"><label for="runSelect">Processing run</label><select id="runSelect" disabled><option value="">No runs yet</option></select></div><div class="run-actions"><button id="startRun" class="primary" disabled>▶ Start processing</button><button id="stopRun" class="secondary" disabled>■ Stop</button></div></div>
+        <div id="mediaStage" class="media-stage"><img id="sourcePicture" alt="Source preview for defining a monitored polygon" hidden><img id="streamImage" alt="Live annotated people tracking output" hidden><canvas id="polygonCanvas" tabindex="0" role="img" aria-label="Polygon editor. Click to add a point; drag a point to move it. Use the coordinate table for keyboard editing." hidden></canvas><div id="mediaEmpty" class="media-empty"><span aria-hidden="true">▱</span><h3>A clearer view of your space</h3><p>Choose a source, outline an area, then start processing.</p></div><div id="mediaCaption" class="media-caption" hidden></div></div>
+        <div class="media-footer"><p id="runDetail" class="muted">Processing starts only when you press Start.</p><button id="retryPreview" class="text-button" disabled>↻ Refresh preview</button></div>
+        <details id="settingsDetails" class="settings"><summary>Processing settings</summary><fieldset id="processingSettings"><div class="settings-grid"><div class="field"><label for="modelSelect">Pretrained model</label><select id="modelSelect"><option value="yolov8n.pt">Fast · YOLOv8n</option><option value="yolov8s.pt">Balanced · YOLOv8s</option><option value="yolov8m.pt">Larger · YOLOv8m</option></select></div><div class="field"><label for="deviceSelect">Compute device</label><select id="deviceSelect"><option value="auto">Automatic</option><option value="0">GPU 0</option><option value="cpu">CPU</option></select></div><div class="field"><label for="confidenceInput">Confidence</label><input id="confidenceInput" type="number" min="0.01" max="0.95" step="0.01" value="0.25"></div><div class="field"><label for="iouInput">Overlap threshold</label><input id="iouInput" type="number" min="0.05" max="0.95" step="0.01" value="0.45"></div><div class="field"><label for="imageSizeInput">Input size</label><select id="imageSizeInput"><option value="640">640 pixels</option><option value="960">960 pixels</option></select></div></div></fieldset></details>
+      </section>
+      <section class="metrics" aria-label="People counts"><article class="metric-card"><p>Currently inside</p><strong id="occupancyValue">—</strong><small id="occupancyNote">No current observation</small></article><article class="metric-card"><p>Total entries</p><strong id="entriesValue">—</strong><small>Confirmed crossings in this run</small></article><article class="metric-card"><p>Total exits</p><strong id="exitsValue">—</strong><small>Confirmed crossings in this run</small></article><article class="metric-card"><p>Net entries</p><strong id="netValue">—</strong><small>Entries minus exits; may be negative</small></article></section>
+      <p id="areaSnapshotNote" class="notice" role="status" hidden></p>
+      <div class="analytics-grid">
+        <section class="panel history-panel" aria-labelledby="historyHeading"><div class="panel-heading"><div><p class="eyebrow">MOVEMENT OVER TIME</p><h2 id="historyHeading">Entry &amp; exit history</h2></div><div class="legend"><span class="legend-in">Entries</span><span class="legend-out">Exits</span></div></div><p id="historyMessage" class="hint">Start a run to see its observed history.</p><svg id="historyChart" class="chart" viewBox="0 0 720 240" role="img" aria-label="Entries and exits by minute"></svg><details class="data-details"><summary>View history as a table</summary><div class="table-wrap"><table><caption class="sr-only">Run history by minute. Unobserved intervals are not zeros.</caption><thead><tr><th scope="col">Window</th><th scope="col">Entries</th><th scope="col">Exits</th><th scope="col">Observation</th></tr></thead><tbody id="historyBody"><tr><td colspan="4">No history yet.</td></tr></tbody></table></div></details></section>
+        <section class="panel forecast-panel" aria-labelledby="forecastHeading"><div class="panel-heading"><div><p class="eyebrow">NEXT 5 MINUTES</p><h2 id="forecastHeading">Movement forecast</h2></div><span class="subtle-badge">Estimate</span></div><p id="forecastMessage" class="hint">A forecast needs enough complete history from one run.</p><svg id="forecastChart" class="chart" viewBox="0 0 480 240" role="img" aria-label="Estimated entries and exits for the next five minutes"></svg><div class="table-wrap"><table><caption class="sr-only">Five minute forecast of entries and exits</caption><thead><tr><th scope="col">Ahead</th><th scope="col">Entries</th><th scope="col">Exits</th></tr></thead><tbody id="forecastBody"><tr><td colspan="3">Not enough history yet.</td></tr></tbody></table></div><p id="forecastMethod" class="hint"></p></section>
+      </div>
+      <section class="panel polygon-panel" aria-labelledby="polygonHeading"><div class="panel-heading"><div><p class="eyebrow">DEFINE YOUR SPACE</p><h2 id="polygonHeading">Area editor</h2></div><span id="pointCount" class="subtle-badge">0 points</span></div><p id="editorHint" class="hint">Click the preview to add points, drag to adjust, or enter coordinates below. Polygon coordinates are normalized from 0 to 1.</p><fieldset id="areaEditor" disabled><div class="area-fields"><div class="field"><label for="areaName">Area name</label><input id="areaName" maxlength="255" placeholder="Main entrance"></div><label class="checkbox-field"><input id="areaActive" type="checkbox" checked> Active area</label><button id="newArea" class="secondary" type="button">New area</button></div><div class="table-wrap vertex-table"><table><caption class="sr-only">Editable polygon vertices in order</caption><thead><tr><th scope="col">Point</th><th scope="col">X (0–1)</th><th scope="col">Y (0–1)</th><th scope="col">Action</th></tr></thead><tbody id="vertexRows"></tbody></table></div><div class="editor-actions"><button id="addVertex" type="button" class="secondary">＋ Add point</button><button id="undoPoints" type="button" class="secondary">Undo</button><button id="clearPoints" type="button" class="text-button">Clear points</button><button id="saveArea" type="button" class="primary">Save area</button></div></fieldset><p id="polygonMessage" class="form-message" role="status"></p></section>
+      <section class="panel" aria-labelledby="eventsHeading"><div class="panel-heading"><div><p class="eyebrow">RECENT ACTIVITY</p><h2 id="eventsHeading">Crossing events</h2></div><span id="eventsCount" class="subtle-badge">0 events</span></div><div class="table-wrap"><table><caption class="sr-only">Recent confirmed polygon crossing events</caption><thead><tr><th scope="col">Time</th><th scope="col">Movement</th><th scope="col">Track</th></tr></thead><tbody id="eventsBody"><tr><td colspan="3">No confirmed crossings yet.</td></tr></tbody></table></div></section>
+      <footer class="page-footer">Counts describe this run and selected area. Missing observations remain unknown.<span id="updatedAt">Waiting for data</span></footer>
+    </main>
+  </div>
+</body>
+</html>

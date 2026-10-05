@@ -1,0 +1,10 @@
+{
+  "name": "synapsis-browser-verification",
+  "private": true,
+  "scripts": {
+    "test:browser": "node --test tests/browser/dashboard.test.cjs"
+  },
+  "devDependencies": {
+    "@playwright/test": "1.62.1"
+  }
+}
