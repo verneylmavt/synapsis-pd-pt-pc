@@ -56,9 +56,10 @@ def create_app(config: Settings | None = None, *, manage_processing: bool = True
         return FileResponse(config.project_root / "app" / "templates" / "dashboard.html")
 
     app.mount("/static", StaticFiles(directory=config.project_root / "app" / "static", check_dir=False), name="static")
-    from app.api import sources, runs, stats
+    from app.api import sources, runs, stats, forecast
     app.include_router(sources.router)
     app.include_router(runs.router)
     app.include_router(stats.router)
+    app.include_router(forecast.router)
 
     return app
