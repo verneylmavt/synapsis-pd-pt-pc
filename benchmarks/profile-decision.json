@@ -1,0 +1,46 @@
+{
+  "default": {
+    "model": "yolov8n.pt",
+    "conf": 0.25,
+    "iou": 0.45,
+    "imgsz": 640
+  },
+  "decision": "retain_existing_default",
+  "development_sequence": "PETS09-S2L1",
+  "held_out_sequence": "TUD-Stadtmitte",
+  "development_candidate": {
+    "model": "yolov8s.pt",
+    "conf": 0.25
+  },
+  "optional_profile": {
+    "model": "yolov8s.pt",
+    "conf": 0.25,
+    "condition": "Occupancy estimation is important and measured local throughput/latency are acceptable."
+  },
+  "reasons": [
+    "Nano confidence 0.10 had identical development directional events but worsened occupancy MAE from 0.1509 to 0.2000.",
+    "Small confidence 0.25 corrected one development extra entry but retained two extra exits; its occupancy MAE was 0.1761 versus nano 0.1509.",
+    "Both held-out profiles missed two of five entries and counted both exits exactly; held-out entry recall was 0.60 and F1 was 0.75 for both.",
+    "Small lowered held-out occupancy MAE from 0.8324 to 0.4134. Measured held-out p95 pipeline latency was 24.8ms versus nano 32.2ms.",
+    "Mixed results on two short public sequences do not justify replacing the conservative default."
+  ],
+  "held_out_selection_rule": "Evaluate nano 0.25 baseline and the small 0.25 candidate selected using development results only; do not choose a new profile by sweeping held-out data.",
+  "reports": {
+    "development": "development.json",
+    "held_out": "held-out.json"
+  },
+  "scope": "Derived polygon counts from human MOT15 trajectories; selected public training sequences, not official hidden-test scores.",
+  "limitations": [
+    "Two short clips and one fixed polygon",
+    "No identity/tracking score",
+    "No calibrated confidence interval",
+    "Single-pass GPU timings include cold-start/order effects",
+    "Allocator memory excludes CUDA context, driver, and other applications"
+  ],
+  "retraining": false,
+  "default_changed": false,
+  "report_sha256": {
+    "development.json": "36120b11c3ce9e714422155a4512cf322e15d4123a6300445bded9dcb9d7612b",
+    "held-out.json": "d663cdebbdcdea779c006493f6db3e3fa54436ee0fabd2d6de0defde0b3745bf"
+  }
+}

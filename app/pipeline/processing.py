@@ -108,6 +108,9 @@ class FrameProcessor:
                                    iou=float(self.settings.get("iou", 0.45)),
                                    device=None if self.settings.get("device", "auto") == "auto"
                                    else self.settings["device"], verbose=False)
+        inference_ms = [result.speed.get("inference") for result in results
+                        if isinstance(getattr(result, "speed", None), dict)]
+        inference_ms = [value for value in inference_ms if value is not None]
         height, width = frame.shape[:2]
         detections = normalize_results(results, width, height, self.areas)
         counted = self.engine.update(detections, time_seconds)
@@ -117,4 +120,5 @@ class FrameProcessor:
         self.last_stats = counted["stats"]
         jpeg = draw_frame(frame, detections, self.areas) if encode else b""
         return {"detections": detections, **counted, "jpeg": jpeg,
-                "latency_seconds": perf_counter() - started}
+                "latency_seconds": perf_counter() - started,
+                "inference_ms": sum(inference_ms) if inference_ms else None}

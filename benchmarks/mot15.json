@@ -1,0 +1,19 @@
+{
+  "dataset": "MOT15 public training sequences",
+  "labels_url": "https://motchallenge.net/data/MOT15Labels.zip",
+  "license_url": "https://motchallenge.net/data/MOT15/",
+  "maximum_download_bytes": 200000000,
+  "annotation_format": "frame_1based,id,left_1based,top_1based,width,height,valid,...",
+  "format_reference": "https://github.com/JonathonLuiten/TrackEval/blob/master/docs/MOTChallenge-format.txt",
+  "coordinate_conversion": "Subtract one from left and top before clipping/normalization; width/height remain unchanged; frame indices stay 1-based.",
+  "reference_semantics": "Human trajectory boxes; normalized center; boundary outside; confirmation=3; startup inside is occupancy only; lost grace=2 seconds without synthetic exit.",
+  "area": {
+    "id": 1,
+    "name": "fixed central counting zone",
+    "polygon": [{"x": 0.25, "y": 0.1}, {"x": 0.75, "y": 0.1}, {"x": 0.75, "y": 0.95}, {"x": 0.25, "y": 0.95}]
+  },
+  "sequences": [
+    {"name": "PETS09-S2L1", "split": "development", "frames": 795, "fps": 7, "width": 768, "height": 576, "video_url": "https://motchallenge.net/sequenceVideos/PETS09-S2L1-raw.mp4"},
+    {"name": "TUD-Stadtmitte", "split": "held_out", "frames": 179, "fps": 25, "width": 640, "height": 480, "video_url": "https://motchallenge.net/sequenceVideos/TUD-Stadtmitte-raw.mp4"}
+  ]
+}

@@ -1,0 +1,2 @@
+# Preserve benchmark artifact bytes so recorded SHA-256 report hashes survive checkout.
+benchmarks/*.json -text
