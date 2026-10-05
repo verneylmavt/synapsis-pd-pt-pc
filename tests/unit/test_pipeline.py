@@ -65,7 +65,9 @@ def test_quiet_file_emits_all_frames_and_completes_with_media_coverage():
     assert len(frames) == 3
     assert [item["frame_index"] for item in frames] == [1, 2, 3]
     assert [item["media_time_ms"] for item in frames] == [0, 100, 200]
-    assert sum(item["duration_seconds"] for item in frames) == pytest.approx(0.3)
+    assert sum(item["duration_seconds"] for item in frames) == pytest.approx(0.2)
+    assert all(left["coverage_start_seconds"] + left["duration_seconds"] <= right["coverage_start_seconds"] + 1e-9
+               for left, right in zip(frames, frames[1:]))
     assert all(item["detections"] == [] and item["jpeg"] for item in frames)
     assert result[-1] == {"kind": "status", "status": "completed", "error_code": None}
     assert capture.released

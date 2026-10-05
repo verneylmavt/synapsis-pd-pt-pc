@@ -15,11 +15,6 @@ from app.services.persistence import persist_batch, utcnow
 OWNERSHIP_KEY = 739_021_418
 
 
-def _worker(spec, output, stop):
-    from app.pipeline.worker import worker_main
-    worker_main(spec, output, stop)
-
-
 @dataclass
 class Runtime:
     id: str
@@ -71,9 +66,10 @@ class Subscription:
 
 
 class RunManager:
-    def __init__(self, config, engine, factory, worker_target=_worker):
+    def __init__(self, config, engine, factory, worker_target=None):
         self.config, self.engine, self.factory = config, engine, factory
-        self.worker_target = worker_target
+        from app.pipeline.entry import worker_entry
+        self.worker_target = worker_target or worker_entry
         self.owner_id = str(uuid4())
         self.lock = threading.RLock()
         self.runtimes = {}

@@ -76,6 +76,8 @@ def worker_main(spec: dict, output_queue, stop_event, *, capture_factory=None, m
     previous_media_ms = -1.0
     media_origin_ms = None
     last_live_utc = None
+    covered_live_until = None
+    last_file_time = None
     while not stop_event.is_set():
         capture = None
         reader = None
@@ -128,10 +130,15 @@ def worker_main(spec: dict, output_queue, stop_event, *, capture_factory=None, m
                     coverage_start = max(segment_opened_utc, epoch - interval)
                     if last_live_utc is not None and 0 <= epoch - last_live_utc <= 2:
                         coverage_start = last_live_utc
+                    if covered_live_until is not None:
+                        coverage_start = max(coverage_start, covered_live_until)
                     duration = max(0, epoch - coverage_start)
+                    covered_live_until = max(covered_live_until or epoch, epoch)
                     last_live_utc = epoch
                 else:
-                    coverage_start, duration = time_seconds, 1 / source_fps
+                    coverage_start = time_seconds if last_file_time is None else last_file_time
+                    duration = max(0, time_seconds - coverage_start)
+                    last_file_time = time_seconds
                 packet = {"kind": "frame", "run_id": spec["run_id"], "frame_index": frame_index,
                           "segment_index": segment_index, "observed_at": observed_at.isoformat(),
                           "media_time_ms": media_ms, "time_seconds": time_seconds,

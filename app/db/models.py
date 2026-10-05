@@ -49,7 +49,7 @@ class Detection(Base):
     __table_args__ = (
         Index("ix_detections_vs_ts", "video_source_id", "timestamp"),
         UniqueConstraint("run_id", "frame_index", "detection_index", name="uq_detection_run_frame"),
-        CheckConstraint("run_id IS NULL OR (frame_index >= 1 AND detection_index >= 0 AND segment_index >= 0)", name="ck_detection_run_frame"),
+        CheckConstraint("run_id IS NULL OR (frame_index IS NOT NULL AND detection_index IS NOT NULL AND segment_index IS NOT NULL AND frame_index >= 1 AND detection_index >= 0 AND segment_index >= 0)", name="ck_detection_run_frame"),
     )
 
     id: Mapped[int] = mapped_column(Integer, primary_key=True)
@@ -78,7 +78,7 @@ class Event(Base):
     __table_args__ = (
         Index("ix_events_area_ts", "area_id", "timestamp"),
         UniqueConstraint("run_id", "segment_index", "frame_index", "area_id", "tracker_id", "type", name="uq_event_run_frame"),
-        CheckConstraint("run_id IS NULL OR (type IN ('enter', 'exit') AND frame_index >= 1 AND segment_index >= 0 AND tracker_id IS NOT NULL)", name="ck_event_run_frame"),
+        CheckConstraint("run_id IS NULL OR (type IN ('enter', 'exit') AND frame_index IS NOT NULL AND segment_index IS NOT NULL AND frame_index >= 1 AND segment_index >= 0 AND tracker_id IS NOT NULL)", name="ck_event_run_frame"),
     )
 
     id: Mapped[int] = mapped_column(Integer, primary_key=True)
@@ -140,3 +140,15 @@ class FrameSample(Base):
     time_seconds: Mapped[float] = mapped_column(Float, nullable=False)
     duration_seconds: Mapped[float] = mapped_column(Float, nullable=False)
     stats: Mapped[list] = mapped_column(JSONB, nullable=False)
+
+
+class RunBucket(Base):
+    __tablename__ = "run_buckets"
+    run_id: Mapped[str] = mapped_column(ForeignKey("processing_runs.id", ondelete="CASCADE"), primary_key=True)
+    area_id: Mapped[int] = mapped_column(Integer, primary_key=True)
+    window_start: Mapped[float] = mapped_column(Float, primary_key=True)
+    coverage_seconds: Mapped[float] = mapped_column(Float, nullable=False, server_default="0")
+    occupancy_seconds: Mapped[float] = mapped_column(Float, nullable=False, server_default="0")
+    sample_count: Mapped[int] = mapped_column(Integer, nullable=False, server_default="0")
+    in_count: Mapped[int] = mapped_column(Integer, nullable=False, server_default="0")
+    out_count: Mapped[int] = mapped_column(Integer, nullable=False, server_default="0")
