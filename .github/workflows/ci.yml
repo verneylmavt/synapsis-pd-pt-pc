@@ -1,0 +1,58 @@
+name: Verification
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    services:
+      postgres:
+        image: postgres:16
+        env:
+          POSTGRES_USER: synapsis
+          POSTGRES_PASSWORD: synapsis
+          POSTGRES_DB: synapsis_test
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U synapsis -d synapsis_test"
+          --health-interval 5s
+          --health-timeout 5s
+          --health-retries 10
+    env:
+      DATABASE_URL: postgresql+psycopg2://synapsis:synapsis@localhost:5432/synapsis_test
+      TEST_DATABASE_URL: postgresql+psycopg2://synapsis:synapsis@localhost:5432/synapsis_test
+      MODEL_DEVICE: cpu
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.10'
+          cache: pip
+          cache-dependency-path: |
+            requirements.txt
+            requirements-dev.txt
+      - name: Install CPU runtime and test dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y libgl1 libglib2.0-0
+          python -m pip install --no-deps torch==2.5.1 torchvision==0.20.1 --index-url https://download.pytorch.org/whl/cpu
+          python -m pip install -r requirements-dev.txt
+      - name: Compile, check fatal Python errors, and test against PostgreSQL
+        run: |
+          python -m compileall -q app alembic scripts
+          python -m ruff check --select E9,F63,F7,F82 app alembic scripts tests
+          python -m pytest -q
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: npm
+      - name: Install browser verification dependencies
+        run: |
+          npm ci
+          npx playwright install --with-deps chromium
+      - name: Verify dashboard browser workflows
+        run: npm run test:browser

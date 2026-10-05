@@ -1,29 +1,54 @@
-# version: "3.9"
 services:
   db:
     image: postgres:16
-    container_name: synapsis-db
     environment:
-      POSTGRES_USER: synapsis
-      POSTGRES_PASSWORD: synapsis
-      POSTGRES_DB: synapsis
+      POSTGRES_USER: ${POSTGRES_USER:-synapsis}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-synapsis}
+      POSTGRES_DB: ${POSTGRES_DB:-synapsis}
     ports:
-      - "5432:5432"
+      - "127.0.0.1:5432:5432"
     volumes:
       - pgdata:/var/lib/postgresql/data
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U synapsis -d synapsis"]
+      test: ["CMD-SHELL", "pg_isready -U $${POSTGRES_USER} -d $${POSTGRES_DB}"]
       interval: 5s
       timeout: 5s
       retries: 10
+    restart: unless-stopped
+
+  api:
+    build: .
+    environment:
+      DATABASE_URL: ${DOCKER_DATABASE_URL:-postgresql+psycopg2://${POSTGRES_USER:-synapsis}:${POSTGRES_PASSWORD:-synapsis}@db:5432/${POSTGRES_DB:-synapsis}}
+      UPLOAD_DIR: /app/data/uploads
+      MODEL_DIR: /models
+      MODEL_DEVICE: cpu
+      MAX_UPLOAD_BYTES: ${MAX_UPLOAD_BYTES:-524288000}
+      MAX_ACTIVE_RUNS: 1
+      MAX_VIEWERS: 8
+    ports:
+      - "127.0.0.1:8000:8000"
+    volumes:
+      - appdata:/app/data
+      - type: bind
+        source: .
+        target: /models
+        read_only: true
+    depends_on:
+      db:
+        condition: service_healthy
+    stop_grace_period: 30s
+    restart: unless-stopped
 
   adminer:
     image: adminer
-    container_name: synapsis-adminer
+    profiles: [debug]
     depends_on:
-      - db
+      db:
+        condition: service_healthy
     ports:
-      - "8080:8080"
+      - "127.0.0.1:8080:8080"
 
 volumes:
   pgdata:
+  appdata:
